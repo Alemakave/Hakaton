@@ -1,5 +1,7 @@
 package ru.khv1.hakaton.configs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -12,6 +14,7 @@ import ru.khv1.hakaton.service.TelegramBot;
 @Component
 public class BotInitializer {
     private final TelegramBot telegramBot;
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @Autowired
     public BotInitializer(TelegramBot telegramBot) {
@@ -24,9 +27,9 @@ public class BotInitializer {
         try{
             telegramBotsApi.registerBot(telegramBot);
         } catch (TelegramApiException e){
-            System.out.println(e.getClass() + ": " + e.getMessage());
+            logger.error(e.getClass() + ": " + e.getMessage());
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                System.out.println(stackTraceElement);
+                logger.error(stackTraceElement.toString());
             }
         }
     }

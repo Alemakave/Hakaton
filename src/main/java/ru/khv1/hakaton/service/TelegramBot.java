@@ -1,7 +1,8 @@
 package ru.khv1.hakaton.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,8 +14,8 @@ import ru.khv1.hakaton.utils.ServerUtils;
 @Component
 @AllArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
-    @Autowired
-    private BotConfig botConfig;
+    private final BotConfig botConfig;
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -52,9 +53,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
+            logger.error(e.getClass().getName() + ": " + e.getMessage());
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                System.out.println(stackTraceElement);
+                logger.error(stackTraceElement.toString());
             }
         }
     }
